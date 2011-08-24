@@ -79,8 +79,8 @@
 
 ;; #Some notes
 ;;
-;; Using an arithmetic progression I find the `nth` or last item from 
-;; the sequence of natural multiples of X until 1000. With this:
+;; In an arithmetic progression I can find the `nth` of a sequence of
+;; natural numbers with this:
 ;;
 ;; `nth = first_item + multiplier * (total_number_of_items - 1 )`
 ;;
@@ -88,11 +88,10 @@
 ;; and the multiplier is `3`, also that the nth item is close to 1000,
 ;; but it's not it, since it must be multiple of 3
 ;;
-;; To find it I need this
+;; To find the last item I need this
 
 (defn previous-multiple [number multiplier]
-  " This will look for the nearest previous multiple of a number where n
-  is the number and d is the multiple"
+  " This will look for the nearest previous multiple of a number"
   (int (* multiplier (Math/floor (/ number multiplier)))))
 
 ;; Now I know that the sequence ends at 999
@@ -100,10 +99,10 @@
 ;; `3 6 9 ... 999`
 ;;
 ;; The only data I don't know is the total number of items in the
-;; collection. Knowing this is important to be able to use arithmetic
-;; series to find the sum of this sequence.
+;; sequence. This number is important to be able to sum all items in the
+;; sequence (arithemtic series).
 ;;
-;; To find this, I just need to solve for total_number_of_items in the
+;; To find it, I just need to solve for total_number_of_items in the
 ;; previous equation, which I'm rewriting for clarity
 ;;
 ;; `last = first + multiplier * ( length - 1 )`
@@ -124,8 +123,7 @@
          (+ first (- last multiplier))
          multiplier)))
 
-;; Now I can sum the values of the sequence `3 6 ... 999` with arithmetic
-;; series
+;; Now I can sum the values of the sequence `3 6 ... 999`
 ;;
 ;; `Sum = length * (first + last)`
 ;;
@@ -137,9 +135,7 @@
 (defn arithmetic-series [length first last]
   (* (/ length 2) (+ first last)))
 
-;; The sum
-(def x 3)
-(def lastn (previous-multiple 1000 x))
-
-(arithmetic-series
-  (length x x lastn) x lastn)      ; => 166863
+;; Performing the sum
+(let [x 3, lastn (previous-multiple 1000 x)]
+  (arithmetic-series
+    (length x x lastn) x lastn))      ; => 166863
