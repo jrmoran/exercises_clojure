@@ -56,9 +56,10 @@
   (defn sum [d]
     "d is both the first element and the multiplier and limit is decreased by 1
     since the problem states sum must be bellow it"
-    (def lasti  (int (* d (Math/floor (/ (- limit 1) d)))))
-    (def length (int (/ (+ d (- lasti d)) d)))
-    (* (/ length 2) (+ d lasti)))
+    (let [lasti (int (* d (Math/floor (/ (- limit 1) d))))
+          length (int (/ (+ d (- lasti d)) d))]
+      (* (/ length 2) (+ d lasti))))
+
   (+ (sum a) (sum b)
      (- (sum (* a b)))))
 
