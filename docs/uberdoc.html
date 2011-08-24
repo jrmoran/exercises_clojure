@@ -2556,9 +2556,9 @@ we get 3, 5, 6 and 9. The sum of these multiples is 23.</p>
         (zero? (mod x b))))
   (reduce + (filter pred? (range limit))))</pre></tr><tr><td class="docs"><h1>Solution C</h1>
 
-<p>Shortcut for anonimous function</p>
+<p>Shortcut for anonymous function</p>
 
-<p>Instead of writting <code>fn[args](...)</code> we can use the macro <code>#(...)</code>
+<p>Instead of writing <code>fn[args](...)</code> we can use the macro <code>#(...)</code>
 where args are represented in the form <code>%</code> or <code>%n</code></p>
 </td><td class="codes" /><pre class="brush: clojure">(defn solc [a b limit]
   (reduce +
@@ -2568,19 +2568,19 @@ where args are represented in the form <code>%</code> or <code>%n</code></p>
          (zero? (mod % b)))
        (range limit))))</pre></tr><tr><td class="docs"><h1>Solution D</h1>
 
-<p>Previous solutions require iterations. A much more efficient solucion
-is achived with arithmetic series</p>
+<p>Previous solutions require iterations. A much more efficient solution
+is achieved with arithmetic series</p>
 </td><td class="codes" /></tr><tr><td class="docs"><p>In this problem there are three sequences. One of multiples of 3 and
 the others of multiples of 5 and 15 respectively. The sum of the last
-sequence is substracted from the first two to avoid the adding a
+sequence is subtracted from the first two to avoid the adding a
 multiple of 3 and 5 twice.</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn solution [a b limit]
   (defn sum [d]
     &quot;d is both the first element and the multiplier and limit is decreased by 1
     since the problem states sum must be bellow it&quot;
-    (def lasti  (int (* d (Math/floor (/ (- limit 1) d)))))
-    (def length (int (/ (+ d (- lasti d)) d)))
-    (* (/ length 2) (+ d lasti)))
+    (let [lasti (int (* d (Math/floor (/ (- limit 1) d))))
+          length (int (/ (+ d (- lasti d)) d))]
+      (* (/ length 2) (+ d lasti))))
   (+ (sum a) (sum b)
      (- (sum (* a b)))))</pre></tr><tr><td class="docs"><h1>Running</h1>
 </td><td class="codes" /><pre class="brush: clojure">(println (str &quot;sola: &quot; (sola 3 5 1000)))         ; =&gt; 233168</pre></tr><tr><td class="docs">
@@ -2593,8 +2593,8 @@ multiple of 3 and 5 twice.</p>
 </td><td class="codes" /><pre class="brush: clojure">(println &quot;solution&quot;)
 (dotimes [_ 5] (time (solution 3 5 10000)))</pre></tr><tr><td class="docs"><h1>Some notes</h1>
 
-<p>Using an arithmetic progression I find the <code>nth</code> or last item from 
-the sequence of natural multiples of X until 1000. With this:</p>
+<p>In an arithmetic progression I can find the <code>nth</code> of a sequence of
+natural numbers with this:</p>
 
 <p><code>nth = first_item + multiplier * (total_number_of_items - 1 )</code></p>
 
@@ -2602,20 +2602,19 @@ the sequence of natural multiples of X until 1000. With this:</p>
 and the multiplier is <code>3</code>, also that the nth item is close to 1000,
 but it's not it, since it must be multiple of 3</p>
 
-<p>To find it I need this</p>
+<p>To find the last item I need this</p>
 </td><td class="codes" /></tr><tr><td class="docs">
 </td><td class="codes" /><pre class="brush: clojure">(defn previous-multiple [number multiplier]
-  &quot; This will look for the nearest previous multiple of a number where n
-  is the number and d is the multiple&quot;
+  &quot; This will look for the nearest previous multiple of a number&quot;
   (int (* multiplier (Math/floor (/ number multiplier)))))</pre></tr><tr><td class="docs"><p>Now I know that the sequence ends at 999</p>
 
 <p><code>3 6 9 ... 999</code></p>
 
 <p>The only data I don't know is the total number of items in the
-collection. Knowing this is important to be able to use arithmetic
-series to find the sum of this sequence.</p>
+sequence. This number is important to be able to sum all items in the
+sequence (arithemtic series).</p>
 
-<p>To find this, I just need to solve for total<em>number</em>of_items in the
+<p>To find it, I just need to solve for total<em>number</em>of_items in the
 previous equation, which I'm rewriting for clarity</p>
 
 <p><code>last = first + multiplier * ( length - 1 )</code></p>
@@ -2634,8 +2633,7 @@ previous equation, which I'm rewriting for clarity</p>
   &quot; Solves length = (last - first + multiplier) / multiplier &quot;
   (int (/
          (+ first (- last multiplier))
-         multiplier)))</pre></tr><tr><td class="docs"><p>Now I can sum the values of the sequence <code>3 6 ... 999</code> with arithmetic
-series</p>
+         multiplier)))</pre></tr><tr><td class="docs"><p>Now I can sum the values of the sequence <code>3 6 ... 999</code></p>
 
 <p><code>Sum = length * (first + last)</code></p>
 
@@ -2645,9 +2643,8 @@ series</p>
 
 <p>The function is expressed like this</p>
 </td><td class="codes" /><pre class="brush: clojure">(defn arithmetic-series [length first last]
-  (* (/ length 2) (+ first last)))</pre></tr><tr><td class="docs"><p>The sum</p>
-</td><td class="codes" /><pre class="brush: clojure">(def x 3)
-(def lastn (previous-multiple 1000 x))</pre></tr><tr><td class="docs">
-</td><td class="codes" /><pre class="brush: clojure">(arithmetic-series
-  (length x x lastn) x lastn)      ; =&gt; 166863</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_"></li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
+  (* (/ length 2) (+ first last)))</pre></tr><tr><td class="docs"><p>Performing the sum</p>
+</td><td class="codes" /><pre class="brush: clojure">(let [x 3, lastn (previous-multiple 1000 x)]
+  (arithmetic-series
+    (length x x lastn) x lastn))      ; =&gt; 166863</pre></tr><tr><td class="spacer docs">&nbsp;</td><td class="codes" /></tr></table><div class="footer">Generated by <a href="https://github.com/fogus/marginalia">Marginalia</a>.&nbsp;&nbsp;Syntax highlighting provided by Alex Gorbatchev's <a href="http://alexgorbatchev.com/SyntaxHighlighter/">SyntaxHighlighter</a><div id="floating-toc"><ul><li class="floating-toc-li" id="floating-toc_"></li></ul></div></div><script type="text/javascript">SyntaxHighlighter.defaults['gutter'] = false;
        SyntaxHighlighter.all()</script></body></html>
