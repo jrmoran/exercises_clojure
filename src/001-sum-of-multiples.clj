@@ -32,9 +32,9 @@
   (reduce + (filter pred? (range limit))))
 
 ;; #Solution C
-;; Shortcut for anonimous function
+;; Shortcut for anonymous function
 ;;
-;; Instead of writting `fn[args](...)` we can use the macro `#(...)`
+;; Instead of writing `fn[args](...)` we can use the macro `#(...)`
 ;; where args are represented in the form `%` or `%n`
 (defn solc [a b limit]
   (reduce +
@@ -45,12 +45,12 @@
        (range limit))))
 
 ;; #Solution D
-;; Previous solutions require iterations. A much more efficient solucion
-;; is achived with arithmetic series
+;; Previous solutions require iterations. A much more efficient solution
+;; is achieved with arithmetic series
 
 ;; In this problem there are three sequences. One of multiples of 3 and
 ;; the others of multiples of 5 and 15 respectively. The sum of the last
-;; sequence is substracted from the first two to avoid the adding a
+;; sequence is subtracted from the first two to avoid the adding a
 ;; multiple of 3 and 5 twice.
 (defn solution [a b limit]
   (defn sum [d]
