@@ -67,8 +67,8 @@
    + ((fn [ result number ]
          (if (> number limit)
            result
-           (let [next-n (round (* number 4.23606797946414))]
-             (recur (conj result number) next-n )))) [] 2)))
+           (recur (conj result number)
+                  (round (* number 4.23606797946414))))) [] 2)))
 
 (solution 4000000)                        ; 4613732
 
