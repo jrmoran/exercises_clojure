@@ -39,12 +39,12 @@
     the specified limit."
   (reduce
     + (filter
-        even? ((fn [result previous current limit]
+        even? ((fn [result previous current ]
                  (if (> previous limit)
                    result
                  (let [next-n (+ previous current)]
-                   (recur (conj result previous) current next-n limit))))
-                 [] 1 2 limit))))
+                   (recur (conj result previous) current next-n ))))
+                 [] 1 2 ))))
 
 ;; Sum of evens until 100
 (sum-fib-evens-until 100)               ; 44
