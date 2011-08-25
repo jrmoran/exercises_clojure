@@ -42,9 +42,9 @@
         even? ((fn [result previous current ]
                  (if (> previous limit)
                    result
-                 (let [next-n (+ previous current)]
-                   (recur (conj result previous) current next-n ))))
-                 [] 1 2 ))))
+                   (recur (conj result previous)
+                          current
+                          (+ previous current)))) [] 1 2 ))))
 
 ;; Sum of evens until 100
 (sum-fib-evens-until 100)               ; 44
@@ -74,6 +74,6 @@
 
 ; Measurements
 (println "\nsum-fib-evens-until")
-(dotimes [_ 5] (time (sum-fib-evens-until 4000000)))
+(dotimes [_ 5] (time (sum-fib-evens-until 4000000)))   ; faster
 (println "\nsolution")
 (dotimes [_ 5] (time (solution 4000000)))
