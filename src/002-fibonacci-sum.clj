@@ -60,6 +60,8 @@
 ;;
 ;; Every third element in the Fibonacci sequence is even hence the ratio
 ;; for even numbers is the golden ratio to the third power: `4.23606797946414`
+
+(use 'clojure.contrib.math)
 (defn solution [limit]
   (reduce
    + ((fn [ result number ]
@@ -70,5 +72,8 @@
 
 (solution 4000000)                        ; 4613732
 
-
-
+; Measurements
+(println "\nsum-fib-evens-until")
+(dotimes [_ 5] (time (sum-fib-evens-until 4000000)))
+(println "\nsolution")
+(dotimes [_ 5] (time (solution 4000000)))
