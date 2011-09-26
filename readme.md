@@ -1,1 +1,1 @@
-Project Euler Solutions
+Programming Exercises from 4Clojure and Project Euler
