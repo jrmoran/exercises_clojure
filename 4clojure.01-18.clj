@@ -86,7 +86,7 @@
 
 (= __ ((fn [x] (+ x 5)) 3))            ; anonymous function
 
-;; The macro character `#` followed by parens `()` is a reader macro and represents
+;; The macro character `#` followed by parenthesis `()` is a reader macro and represents
 ;; an *anonymous function literal*
 (= __ (#(+ % 5) 3))
 
@@ -121,7 +121,7 @@
 
 ;; # 17. Sequences: map	
 ;; The `map` function takes two arguments: a function and a sequence, it
-;; returns a new sequence with the result of applying the funtion to each
+;; returns a new sequence with the result of applying the function to each
 ;; item of the sequence.
 (def __ '(6 7 8))
 (= __ (map #(+ % 5) '(1 2 3)))

@@ -15,14 +15,14 @@
 (= (__ [[1 2] [1 2] [3 4] [1 2]])
    '([1 2] [3 4] [1 2]))
 
-;; It's also posible to group similar consecutive items with
+;; It's also possible to group similar consecutive items with
 ;; `partition-by` which splits items until the passed function returns a
 ;; different value,
 ;;
 ;;      (partition-by + [ 1 2 1 1 2 3 4 4 4 5 4])
 ;;      => ((1) (2) (1 1) (2) (3) (4 4 4) (5) (4))
 ;;
-;; Now to retreive a unique item in a group:
+;; Now to retrieve a unique item in a group:
 ;;
 ;;      (map last '((1) (2) (1 1) (2) (3) (4 4 4) (5) (4)))
 ;;      => (1 2 1 2 3 4 5 4)
@@ -152,7 +152,7 @@
 ;; returns the maximum value.
 
 ;; `& args` makes sure we can handle multiple arguments. The initial
-;; value of 0 for `reduce` is neeeded.
+;; value of 0 for `reduce` is needed.
 (def __ (fn [& args]
           (reduce #(if (> % %2) % %2) 0 args)))
 
@@ -224,7 +224,7 @@
                       (range 1 (inc (count col))) col))))
 
 ;; if the collection is `[ :a :b :c ]`, generate a range of indices `[1 2 3]`
-;; then map the values `f :a 1`, `f :b 2` and so on. When the indice is
+;; then map the values `f :a 1`, `f :b 2` and so on. When the index is
 ;; a multiple of a `n` return `nil` otherwise return the item in the
 ;; collection. Finally remove all nils.
 
@@ -239,7 +239,7 @@
 ;; with `partition-all` I can make sub groups, ie: `[1 2 3 4] => ((1 2)(3 4))`
 (def __ (fn [c n] (mapcat #(take (dec n) %) (partition-all n c))))
 
-;; `partition-all` can take `step` as argument, so it can skipt the nth
+;; `partition-all` can take `step` as argument, so it can skip the nth
 ;; element
 ;;
 ;;    (partition-all 2 3 [1 2 3 4 5 6])

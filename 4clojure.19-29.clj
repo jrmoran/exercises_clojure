@@ -180,7 +180,7 @@
 
 ;; # 26. Fibonacci Sequence
 
-;; Write a function which returns the first X fibonacci numbers.
+;; Write a function which returns the first X Fibonacci numbers.
 
 ;; Golf Score 65
 (def __

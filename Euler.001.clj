@@ -101,7 +101,7 @@
 ;;
 ;; The only data I don't know is the total number of items in the
 ;; sequence. This number is important to be able to sum all items in the
-;; sequence (arithemtic series).
+;; sequence (arithmetic series).
 ;;
 ;; To find it, I just need to solve for total_number_of_items in the
 ;; previous equation, which I'm rewriting for clarity

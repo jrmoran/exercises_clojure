@@ -13,7 +13,7 @@
        5))
 
 ;; In this exercise `foo` takes a number `x` when `x` is greater than 0,
-;; then a recursive call is made to the next decriment in `x`, the
+;; then a recursive call is made to the next decrement in `x`, the
 ;; result of this new call will be combined with the value of `x` in a
 ;; new list.
 ;;
