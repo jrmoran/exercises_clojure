@@ -195,3 +195,65 @@
 (= (__ [30 20] [25 15])'
    [30 25 20 15])
 
+;; # 40 Interpose a Seq
+;; Write a function which separates the items of a sequence by an arbitrary value.
+;;
+;; restrictions: `interpose`
+
+(def __
+  (fn [x c] (rest (mapcat #(conj [x] %) c))))
+
+;; or
+(def __ #(rest (interleave (repeat %) %2)))
+
+(= (__ 0 [1 2 3])
+   [1 0 2 0 3])
+	
+(= (apply str (__ ", " ["one" "two" "three"]))
+   "one, two, three")
+	
+(= (__ :z [:a :b :c :d])
+   [:a :z :b :z :c :z :d])
+
+;; # 41 Drop Every Nth Item
+;; Write a function which drops every Nth item from a sequence.
+	
+(def __
+  (fn [col n]
+    (remove nil? (map #(if-not (zero? (mod % n)) %2)
+                      (range 1 (inc (count col))) col))))
+
+;; if the collection is `[ :a :b :c ]`, generate a range of indices `[1 2 3]`
+;; then map the values `f :a 1`, `f :b 2` and so on. When the indice is
+;; a multiple of a `n` return `nil` otherwise return the item in the
+;; collection. Finally remove all nils.
+
+;; another way is using `map-indexed`, since indexes are zero-based I'd
+;; need to increase by it by one in the evaluating function.
+(def __
+  (fn [col n]
+    (remove nil? (map-indexed #(if-not (zero? (mod (inc %) n)) %2) col))))
+
+#(apply concat (partition-all (dec %2) %2 %))
+
+;; with `partition-all` I can make sub groups, ie: `[1 2 3 4] => ((1 2)(3 4))`
+(def __ (fn [c n] (mapcat #(take (dec n) %) (partition-all n c))))
+
+;; `partition-all` can take `step` as argument, so it can skipt the nth
+;; element
+;;
+;;    (partition-all 2 3 [1 2 3 4 5 6])
+;;    => ((1 2) (4 5))
+;;
+;; For my purposes, I just need to concat them
+
+(def __ (fn [c n] (apply concat (partition-all (dec n) n c))))
+
+(= (__ [1 2 3 4 5 6 7 8] 3)
+   [1 2 4 5 7 8])
+	
+(= (__ [:a :b :c :d :e :f] 2)
+   [:a :c :e])
+	
+(= (__ [1 2 3 4 5 6] 4)
+   [1 2 3 5 6])
