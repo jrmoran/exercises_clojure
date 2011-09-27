@@ -255,3 +255,81 @@
 	
 (= (__ [1 2 3 4 5 6] 4)
    [1 2 3 5 6])
+
+;; # 42 Factorial Fun
+;;Write a function which calculates factorials.
+(def __ #(reduce * (range 1 (inc %))))
+
+(= (__ 1) 1)
+	
+(= (__ 3) 6)
+	
+(= (__ 5) 120)
+	
+(= (__ 8) 40320)
+
+;; # 43 Reverse Interleave
+;; Write a function which reverses the interleave process into x number
+;; of subsequences.
+
+(partition-all 2 [1 2 3 4 5 6])             ; ((1 2) (3 4) (5 6))
+(interleave [1 2] [3 4] [5 6])              ; (1 3 5 2 4 6)
+(partition 3 '(1 3 5 2 4 6))                ; ((1 3 5) (2 4 6))
+
+(def __ (fn [c n]
+          (partition (/ (count c) n)
+                     (apply interleave (partition-all n c)))))
+
+;; or
+(def __ (fn [c n] (apply map list (partition-all n c))))
+
+(= (__ [1 2 3 4 5 6] 2)
+   '((1 3 5) (2 4 6)))
+	
+(= (__ (range 9) 3)
+   '((0 3 6) (1 4 7) (2 5 8)))
+	
+(= (__ (range 10) 5)
+   '((0 5) (1 6) (2 7) (3 8) (4 9)))
+
+;; # 44 Rotate Sequence
+;; Write a function which can rotate a sequence in either direction.
+
+(take 2 [1 2 3 4 5])                          ; (1 2)
+(drop 2 [1 2 3 4 5])                          ; (3 4 5)
+
+(defn adjust [c n]
+  "Adjust index to be within a valid range [1..count]"
+  (if (and (<= n c) (>= n 1))
+    n
+    (recur c (if (neg? n)
+             (- c (* -1 n))
+             (- n c)))))
+
+;; adjust can be replaced with mod
+(mod 2 5)             ; 2
+(mod -2 5)            ; 3
+(mod 6 5)             ; 1
+(mod 1 3)             ; 1
+(mod -4 3)            ; 2
+
+(def __ #(let [ n (mod % (count %2))]
+           (concat (drop n %2)
+                   (take n %2))))
+
+
+(= (__ 2 [1 2 3 4 5])
+   '(3 4 5 1 2))
+	
+(= (__ -2 [1 2 3 4 5])
+   '(4 5 1 2 3))
+	
+(= (__ 6 [1 2 3 4 5])
+   '(2 3 4 5 1))
+	
+(= (__ 1 '(:a :b :c))
+   '(:b :c :a))
+	
+(= (__ -4 '(:a :b :c))
+   '(:c :a :b))
+
