@@ -234,8 +234,6 @@
   (fn [col n]
     (remove nil? (map-indexed #(if-not (zero? (mod (inc %) n)) %2) col))))
 
-#(apply concat (partition-all (dec %2) %2 %))
-
 ;; with `partition-all` I can make sub groups, ie: `[1 2 3 4] => ((1 2)(3 4))`
 (def __ (fn [c n] (mapcat #(take (dec n) %) (partition-all n c))))
 
