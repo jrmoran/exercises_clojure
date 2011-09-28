@@ -333,3 +333,53 @@
 (= (__ -4 '(:a :b :c))
    '(:c :a :b))
 
+;; # 45 Intro to Iterate
+;;
+;; The iterate function can be used to produce an infinite lazy sequence.
+
+(take 4 (iterate (partial + 2) 1))      ; (1 3 5 7)
+	
+(def __ '(1 4 7 10 13))
+
+(= __ (take 5 (iterate #(+ 3 %) 1)))
+
+
+;; # 46 Flipping out
+;; Write a higher-order function which flips the order of the arguments of an
+;; input function.
+
+;; nth works like this
+;;
+;;     (nth [5 6 7] 1)      => 6
+;;
+;; I need it to do this
+;;
+;;     (nth 1 [5 6 7])      => 6
+;;
+;; I have access to the arguments with the `args` keyword.
+
+(apply nth (seq (reverse '(1 [5 6 7]))))      ; => 6
+
+;; the previous would work if I was passing the arguments, but I
+;; actually need to return a function, hence higher-order.
+
+(def __ (fn [f] #(f %2 %)))
+
+;; the previous function works great for the tests provided, but the
+;; following can handle many more than reversing two arguments
+
+(def __ (fn [f] (fn [& args] (apply f (reverse args)))))
+
+
+(= 3
+   ((__ nth) 2 [1 2 3 4 5]))
+	
+(= true
+   ((__ >) 7 8))
+	
+(= 4
+   ((__ quot) 2 8))
+	
+(= [1 2 3]
+   ((__ take) [1 2 3 4 5] 3))
+
