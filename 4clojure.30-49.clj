@@ -383,3 +383,44 @@
 (= [1 2 3]
    ((__ take) [1 2 3 4 5] 3))
 
+;; # 47 Contain Yourself
+;; The contains? function checks if a KEY is present in a given collection.
+;; This often leads beginner clojurians to use it incorrectly with numerically
+;; indexed collections like vectors and lists.
+
+(def __ 4)
+	
+(contains? #{4 5 6} __)
+(contains? [1 1 1 1 1] __)
+(contains? {4 :a 2 :b} __)
+(not (contains? '(1 2 4) __))
+
+;; # 48 Intro to some
+;; The some function takes a predicate function and a collection.
+;; It returns the first logical true value of (predicate x) where x is an
+;; item in the collection.
+
+(def __ 6)
+
+(= __ (some #{2 7 6} [5 6 7 8]))
+(= __ (some #(when (even? %) %) [5 6 7 8]))
+
+;; # 49 Split a sequence
+;; Write a function which will split a sequence into two parts.
+;;
+;; restriction: `split-at`
+	
+(split-at 3 [1 2 3 4 5 6])              ;=> [(1 2 3)(4 5 6)]
+(split-at 2 [1 2 3 4 5 6])              ;=> [(1 2)(3 4 5 6)]
+
+;; solution
+(def __ (fn [n col] (list (take n col) (drop n col))))
+
+(= (__ 3 [1 2 3 4 5 6])
+   [[1 2 3] [4 5 6]])
+	
+(= (__ 1 [:a :b :c :d])
+   [[:a] [:b :c :d]])
+	
+(= (__ 2 [[1 2] [3 4] [5 6]])
+   [[[1 2] [3 4]] [[5 6]]])
