@@ -80,8 +80,8 @@
 ;;       ((3 0))
 ;;       ((0 4) (4 5)) )
 ;;
-;; but we need to remove those pairs where the second is less than the first item, 
-;; this is done by evaluating each sequences first pair
+;; but we need to remove those pairs where the second item is less than
+;; the first, this is done by applying a filter
 
 (let [col [1 0 1 2 3 0 4 5]
       s>f? #(> (second %) (first %))]
@@ -95,7 +95,7 @@
 
 ;; but sometimes the filtered sequence might be empty, for example
 ;; if we are evaluating `col` with a value of `[7 6 5 4]` we get an
-;; empty sequence, which will can potentially throw a null pointer
+;; empty sequence, which can potentially throw a null pointer
 ;; exception later
 ;;
 ;; To fix it, we just add a condition
@@ -198,6 +198,111 @@
 (= (__ [7 6 5 4])
    [])
 
+;; # 54 Partition a Sequence
+;; Write a function which returns a sequence of lists of x items each.
+;; Lists of less than x items should not be returned.
+
+;; restrictions: `partition`, `partition-all`
+
+;; `split at` seems a good candidate, I would just need to continue
+;; spliting the rest of the sequence until there are no more than `n`
+;; elements
+
+(split-at 3 (range 9))	      ; [(0 1 2) (3 4 5 6 7 8)]
+
+(def __ (fn [n col]
+          ((fn [ncol col]
+            (let [[fs ss] (split-at n col)]
+              (if (< (count fs) n)
+                ncol
+                (recur (conj ncol fs) ss)))) [] col)))
+
+(= (__ 3 (range 9))
+   '((0 1 2) (3 4 5) (6 7 8)))
+	
+(= (__ 2 (range 8))
+   '((0 1) (2 3) (4 5) (6 7)))
+	
+(= (__ 3 (range 8))
+   '((0 1 2) (3 4 5)))
+
+;; # 55 Count Occurences
+;; Write a function which returns a map containing the number of
+;; occurences of each distinct item in a sequence.
+;;
+;; restrictions: `frequencies`
+(frequencies [1 1 2 3 2 1 1])   ; { 1 4, 2 2, 3 1 }
+	
+;; using a map to keep track of elements being evaluated. A little review
+(type {1 2 3 4})                    ; persisten array map
+
+;; check if an item exists. We can also try to retreive the item itself
+;; and if not found we get nil
+(contains? {4 3 5 6} 4)             ; true
+({4 3 5 6} 4)                       ; 3
+({4 3 5 6} 3)                       ; nil, there's no key `3`
+
+(let [m {:k 3}]
+  (assoc-in m [:k] (inc (m :k))))   ; 4
+
+;; since the results are expected to be sorted, a sorted map is needed
+(def __ #(reduce
+           (fn [m x]
+             (let [a (m x)
+                   b (if (nil? a) 1 (inc a))]
+               (assoc-in m [x] b)))
+           (sorted-map) %))
+
+(= (__ [1 1 2 3 2 1 1])
+   {1 4, 2 2, 3 1})
+	
+(= (__ [:b :a :b :a :b])
+   {:a 2, :b 3})
+	
+(= (__ '([1 2] [1 3] [1 3]))
+   {[1 2] 1, [1 3] 2})
+
+;; #56 Find Distinct Items
+;; Write a function which removes the duplicates from a sequence.
+;; Order of the items must be maintained.
+;;
+;; restrictions: `distinct`
+(distinct [1 2 3 4])
+
+;; a set is a good candidate since it allows unique items but doesn't
+;; keep the order of items
+
+(def __ (fn [c]
+          (vec (reduce #(conj % %2)
+                       #{} c))))
+
+;; when using a list, we can prevent duplicates by checking if an item
+;; has already been added. While an array map with a vector and a set
+;; inside could be more efficient, a simple linear check would work in
+;; this exercise
+
+(contains? 2 '(1 2 3)) ; => false
+(some #{3} '(1 2 3))   ; => 3,   check if an item is in a list
+(some #{5} '(1 2 3))   ; => nil, check if an item is in a list
+(some #{5} '(6))       ; => nil, check if an item is in a list
+
+(def __ (fn [c]
+          (reduce #(if (some #{%2} %)
+                     %
+                     (conj % %2))
+                  [] c)))
+
+(= (__ [1 2 1 3 1 2 4])
+   [1 2 3 4])
+	
+(= (__ [:a :a :b :b :c :c])
+   [:a :b :c])
+	
+(= (__ '([2 4] [1 2] [1 3] [1 3]))
+   '([2 4] [1 2] [1 3]))
+	
+(= (__ (range 50))
+   (range 50))
 
 ;; # 57. Simple Recursion	
 ;; A recursive function is a function which calls itself.
@@ -231,6 +336,17 @@
 ;;      (conj (conj '(3 2 1) 4) 5)
 ;;      (conj '(4 3 2 1) 5)
 ;;      '(5 4 3 2 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;WIP
+;; #58 Function Composition
+;; Write a function which allows you to create function compositions.
+;; The parameter list should take a variable number of functions, and
+;; create a function applies them from right-to-left.
+	
+(= [3 2 1] ((__ rest reverse) [1 2 3 4]))
+(= 5 ((__ (partial + 3) second) [1 2 3 4]))
+(= true ((__ zero? #(mod % 8) +) 3 5 7 9))
+(= "HELLO" ((__ #(.toUpperCase %) #(apply str %) take) 5 "hello world"))
 
 ;; # 64. Intro to Reduce	
 ;; `reduce` takes a 2 argument function and an optional starting value.
