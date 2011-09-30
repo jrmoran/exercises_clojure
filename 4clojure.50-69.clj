@@ -270,7 +270,7 @@
 (distinct [1 2 3 4])
 
 ;; a set is a good candidate since it allows unique items but doesn't
-;; keep the order of items
+;; keep the original order of items
 
 (def __ (fn [c]
           (vec (reduce #(conj % %2)
