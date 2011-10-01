@@ -337,56 +337,97 @@
 ;;      (conj '(4 3 2 1) 5)
 ;;      '(5 4 3 2 1)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;WIP
-;; #58 Function Composition
+;; # 58 Function Composition
 ;; Write a function which allows you to create function compositions.
 ;; The parameter list should take a variable number of functions, and
 ;; create a function applies them from right-to-left.
-	
+;;
+;; restrictions: `comp`
+
+;; `comp` creates a composition of functions, so we can go from this
+;;
+;;      ( f ( g ( h (i x) ) ) )
+;;
+;; to this:
+;;
+;;      ((comp i h g f) x)
+;;
+;; example:
+(rest (reverse [1 2 3 4]))
+((comp rest reverse) [1 2 3 4])
+((-> rest reverse) [1 2 3 4])
+
+
+;; this passes the first two tests
+(def __ (fn [f f2] #(f (f2 %))))
+
+;; but we need to handle multiple functions, while `comp` already does
+;; it, we can replicate it like this
+(def __ (fn [& args] (apply comp args)))
+
+;; we can take the functions, reverse them and evaluate their own
+;; argument, which is the result of the previous evaluations...
+(def __ (fn [& args]
+          (let [funs (reverse (sequence args))]
+            #(loop [result ((first funs) %)
+                    funs (rest funs)]
+               (if (empty? funs)
+                 result
+                 (recur ((first funs) result) (rest funs)))))))
+
+;; this passes the first two tests, but fails when the composition of
+;; function has to handle more than one argument, so we need to apply
+;; each function to an unknown number of arguments.
+
+(def __ (fn [& functions]
+          (let [funs (reverse (sequence functions))]
+            (fn [& args]
+              (loop [result (apply (first funs) args)
+                     funs (rest funs)]
+                (if (empty? funs)
+                  result
+                  (recur ((first funs) result) (rest funs))))))))
+
+
 (= [3 2 1] ((__ rest reverse) [1 2 3 4]))
+
 (= 5 ((__ (partial + 3) second) [1 2 3 4]))
+
 (= true ((__ zero? #(mod % 8) +) 3 5 7 9))
+
 (= "HELLO" ((__ #(.toUpperCase %) #(apply str %) take) 5 "hello world"))
 
-;; # 64. Intro to Reduce	
-;; `reduce` takes a 2 argument function and an optional starting value.
+;; # 59 Juxtaposition
+;; Take a set of functions and return a new function that takes a
+;; variable number of arguments and returns a sequence containing the
+;; result of applying each function left-to-right to the argument list.
 ;;
-;; * It applies the function to the first 2 items in the sequence (or the
-;; starting value and the first element of the sequence).
-;;
-;; * In the next iteration the function will be called on the previous
-;; return value and the next item from the sequence, thus reducing the
-;; entire collection to one value.
+;; restrictions: `juxt`
 	
-(def __ +)
-
-(= 15 (reduce __ [1 2 3 4 5]))
-(=  0 (reduce __ []))
-(=  6 (reduce __ 1 [2 3]))
-
-;; # 68. Recurring Theme	
-;; Clojure only has one non-stack-consuming looping construct: `recur`.
+;; first an overview of `juxt`
 ;;
-;; Either a function or a loop can be used as the recursion point. Either way,
-;; recur rebinds the bindings of the recursion point to the values it is passed.
-;;
-;; Recur must be called from the tail-position, and calling it elsewhere will
-;; result in an error.
+;; this:
+((juxt first count)[1 2 4 5])
+
+;; is similar to this:
+[(first [1 2 4 5]) (count [1 2 4 5])]
+
+;; another example
+((juxt first second rest count)[1 2 4 5])
+
+[(first [1 2 4 5]) (second [1 2 4 5]) (rest [1 2 4 5]) (count[1 2 4 5])]
+
+;; sol
+(def __
+  (fn [& funs]
+    (fn [& args]
+      (map (fn [f](apply f args)) funs))))
+
+(= [21 6 1]
+   ((__ + max min) 2 3 5 1 6 4))
 	
-(def __ [7 6 5 4 3])
-(= __
-  (loop [x 5
-         result []]
-    (if (> x 0)
-      (recur (dec x) (conj result (+ 2 x)))
-      result)))
-
-;; Behavior of linear iteration
-;;
-;;      (foo 5 [])
-;;      (foo 4 [7])
-;;      (foo 3 [7 6])
-;;      (foo 2 [7 6 5])
-;;      (foo 1 [7 6 5 4])
-;;      (foo 0 [7 6 5 4 3])
-;;      [7 6 5 4 3]
+(= ["HELLO" 5]
+   ((__ #(.toUpperCase %) count) "hello"))
+	
+(= [2 6 4]
+   ((__ :a :c :b) {:a 2, :b 4, :c 6, :d 8 :e 10}))
